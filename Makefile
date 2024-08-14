@@ -11,7 +11,15 @@ FILES	:=	main.c \
 			cmp.c \
 			utils.c \
 			list.c \
-		
+
+LIB_NAME	:= ftprintf
+LIB_DIR		:= ./ft_printf
+
+$(LIB_NAME):
+	@ make -C ./ft_printf
+	@ echo "\033[0;32m [DONE] \033[0m"
+
+
 CC		:= cc
 OBJDIR	:= objs
 SRCDIR  := srcs
@@ -21,13 +29,13 @@ OBJS	:= $(addprefix $(OBJDIR)/, $(FILES:.c=.o))
 
 all: $(NAME) 
 
-$(NAME): $(OBJDIR) $(OBJS)
-	@ $(CC) -o $(NAME) $(OBJS) -L $(INC)
+$(NAME): $(OBJDIR) $(OBJS) $(LIB_NAME)
+	@ $(CC) -o $(NAME) $(OBJS) -I $(INC) -L $(LIB_DIR) -l $(LIB_NAME)
 	@ echo "\033[0;32m [DONE] \033[0m"
 	
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@ $(CC) $(CFLAGS) -I $(INC) -c $< -o $@
+	@ $(CC) $(CFLAGS) -I $(INC) -I $(LIB_DIR) -c $< -o $@
 	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Compiling: \033[0m  " $(<)
 
 $(OBJDIR):

@@ -7,9 +7,9 @@ static void	_print_data(t_data *data)
 	{
 		t_sym *symbol = sym->data;
 		if (symbol->sym_64->st_shndx == 0)
-			printf("%16c %c %s\n", ' ', symbol->symbol, symbol->name);
+			ft_printf("%16c %c %s\n", ' ', symbol->symbol, symbol->name);
 		else
-			printf("%016lx %c %s\n", symbol->sym_64->st_value, symbol->symbol, symbol->name);
+			ft_printf("%016lx %c %s\n", symbol->sym_64->st_value, symbol->symbol, symbol->name);
 		sym = sym->next;
 	}
 }

@@ -16,7 +16,7 @@ REMOVE = rm -f
 
 all: $(NAME)
 
-$(NAME):	$(OBJ)
+$(NAME): $(OBJ)
 	@$(LIB) $(OBJ)
 clean:
 	@$(REMOVE) $(OBJ)

@@ -7,19 +7,16 @@ static void	_print_data(t_data *data)
 	{
 		t_sym *symbol = sym->data;
 		if (symbol->sym_32->st_shndx == 0)
-			printf("%8c %c %s\n", ' ', symbol->symbol, symbol->name);
+			ft_printf("%8c %c %s\n", ' ', symbol->symbol, symbol->name);
 		else
-			printf("%08x %c %s\n", symbol->sym_32->st_value, symbol->symbol, symbol->name);
+			ft_printf("%08x %c %s\n", symbol->sym_32->st_value, symbol->symbol, symbol->name);
 		sym = sym->next;
 	}
 }
 
 static inline int __is_skiping(Elf32_Sym *sym)
 {
-	if ((ELF32_ST_TYPE(sym->st_info) != STT_SECTION && !(sym->st_shndx == SHN_LOPROC || 
-		sym->st_shndx == SHN_HIPROC || sym->st_shndx == SHN_LOOS   || sym->st_shndx == SHN_ABS || 
-		sym->st_shndx == SHN_AFTER  || sym->st_shndx == SHN_COMMON || sym->st_shndx == SHN_BEFORE ||
-		sym->st_shndx == SHN_XINDEX || sym->st_shndx == SHN_HIOS   || sym->st_shndx == SHN_HIRESERVE)) ||
+	if ((ELF32_ST_TYPE(sym->st_info) != STT_SECTION && !(sym->st_shndx == (SHN_LOPROC | SHN_HIPROC | SHN_LOOS | SHN_ABS | SHN_AFTER | SHN_COMMON | SHN_BEFORE | SHN_XINDEX | SHN_HIOS | SHN_HIRESERVE))) ||
 		(ELF32_ST_BIND(sym->st_info) == STB_GLOBAL))
 			return 0;
 	return 1;
