@@ -43,10 +43,12 @@ $(OBJDIR):
 	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Creating: \033[0m   " $(OBJDIR) folder
 
 clean:
+	@ make clean -C $(LIB_DIR)
 	@ $(RM) -r $(OBJDIR)
 	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Deleting: \033[0m   " $(OBJDIR)
 
 fclean: clean
+	@ make fclean -C $(LIB_DIR)
 	@ ${RM} ${NAME}
 	@echo "\033[0;32m [OK] \033[0m       \033[0;33m Deleting: \033[0m   " $(NAME)
 	
