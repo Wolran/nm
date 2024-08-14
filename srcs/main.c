@@ -1,53 +1,93 @@
 #include "nm.h"
 
-
-void is_32_64(t_data *data)
+static int	_pars_arv(t_list **lists, int argc, char **argv)
 {
-	if (data->header->e_ident[EI_CLASS] == ELFCLASS32)
-		is_32(data);
-	else if (data->header->e_ident[EI_CLASS] == ELFCLASS64)
-		is_64(data);
-	else
-		printf("ft_nm: %s: File format not recognized\n", data->filename);
+	if (argc == 1) {
+	t_list *new = ft_lstnew("a.out");
+	if (!new)
+	  return printf("memory allocation failed\n"), 1;
+	*lists = new;
+	}
+	else {
+		for (int i = 1; i < argc; ++i) {
+			t_list *new = ft_lstnew(argv[i]);
+			if (!new)
+				return printf("memory allocation failed\n"), 1;
+			ft_lstadd_back(lists, new);
+		}
+	}
+	return 0;
 }
 
-void ft_nm(char *filename)
+static int	_init_data(t_data *data)
 {
-	t_data data;
+	int fd = open(data->file_name, O_RDONLY);
+	if (fd == -1)
+		return printf("open: '%s': can't open file\n", data->file_name), 1;
+	if (fstat(fd, &data->stat) == -1)
+		return printf("fstat: '%s': can't stat file\n", data->file_name), 1;
+	if (S_ISDIR(data->stat.st_mode))
+		return printf("fstat: '%s': is a directory\n", data->file_name), 1;
+	if (data->stat.st_size < (off_t)sizeof(Elf32_Ehdr))
+		return printf("'%s': file too small to be ELF", data->file_name), 1;
 
-	data.filename = filename;
-	data.fd = open(filename, O_RDONLY);
-	if (data.fd < 0 || fstat(data.fd, &data.buf) < 0)
-	{
-		printf("ft_nm: '%s': No such file\n", filename);
-		exit (0);
-	}
-	if (S_ISDIR(data.buf.st_mode))
-	{
-		printf("ft_nm: %s: Is a directory\n", filename);
-		exit (0);
-	}
-	data.header = mmap(NULL, sizeof(Elf64_Ehdr), PROT_READ, MAP_PRIVATE, data.fd, 0);
-	if (data.header == MAP_FAILED)
-	{
-		printf("ft_nm: '%s': No such file\n", filename);
-		exit (0);
-	}
-	if (data.header->e_ident[EI_MAG0] != ELFMAG0 || data.header->e_ident[EI_MAG1] != ELFMAG1 \
-		|| data.header->e_ident[EI_MAG2] != ELFMAG2 || data.header->e_ident[EI_MAG3] != ELFMAG3)
-	{
-		printf("ft_nm: %s: File format not recognized\n", filename);
-		exit (0);
-	}
-	is_32_64(&data);
+	data->fd = fd;
+	data->data = mmap(NULL, data->stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
+	if (!data->data || data->data == MAP_FAILED)
+		return printf("mmap: '%s': can't map file\n", data->file_name), 1;
+
+	Elf64_Ehdr* header = (Elf64_Ehdr*)data->data;
+	char str[4] = {header->e_ident[0], header->e_ident[1], header->e_ident[2], header->e_ident[3]};
+	if (strncmp(str, ELFMAG, SELFMAG) != 0)
+		return printf("'%s': invalid ELF file\n", data->file_name), 1;
+
+	if (header->e_ident[EI_CLASS] == ELFCLASS32) 
+		data->elf = 32;
+	else if (header->e_ident[EI_CLASS] == ELFCLASS64)
+		data->elf = 64;
+	else 
+		return printf("'%s': invalid ELF class\n", data->file_name), 1;
+	return 0;
 }
 
 int main(int arc, char **arv)
 {
-	if (arc == 1)
-		ft_nm("a.out");
-	else
-		for (int i = 1; i < arc; i++)
-			ft_nm(arv[i]);
-	return (0);
+	t_list *lists = NULL;
+	if (_pars_arv(&lists, arc, arv) != 0)
+		return EXIT_FAILURE;
+
+	t_data data;
+	for (int i = 0; i < ft_lstsize(lists); i++)
+	{
+		ft_bzero(&data, sizeof(t_data));
+		data.file_name = ft_lstat(lists, i)->data;
+		printf("file name = %s\n", data.file_name);
+		if (_init_data(&data) != 0)
+		{
+			free_data(&data);
+			continue;
+		}
+		if (data.elf == 64){
+			if (print_data_64(&data) != 0)
+			{
+				free_data(&data);
+				continue;
+			}
+		}
+		else if (data.elf == 32)
+		{
+			if (print_data_32(&data) != 0)
+			{
+				free_data(&data);
+				continue;
+			}
+		}
+		free_data(&data);
+	}
+	ft_lstclear(&lists , NULL);
+	return 0;
 }
+
+
+//!TODO: change printf, strncmp, strlen
+//!TODO: S_ISDIR ? bonus ?

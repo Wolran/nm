@@ -4,10 +4,13 @@ CFLAGS	:= -Werror -Wall -Wextra
 
 INC 	:= includes
 
-FILES	:= main.c \
-		   elf32.c \
-		   elf64.c \
-		   print.c \
+FILES	:=	main.c \
+			char_symbol.c \
+			print_data_64.c \
+			print_data_32.c \
+			cmp.c \
+			utils.c \
+			list.c \
 		
 CC		:= cc
 OBJDIR	:= objs
