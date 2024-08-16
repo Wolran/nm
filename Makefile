@@ -16,8 +16,7 @@ LIB_NAME	:= ftprintf
 LIB_DIR		:= ./ft_printf
 
 $(LIB_NAME):
-	@ make -C ./ft_printf
-	@ echo "\033[0;32m [DONE] \033[0m"
+	@ make -C $(LIB_DIR)
 
 
 CC		:= cc
@@ -29,7 +28,7 @@ OBJS	:= $(addprefix $(OBJDIR)/, $(FILES:.c=.o))
 
 all: $(NAME) 
 
-$(NAME): $(OBJDIR) $(OBJS) $(LIB_NAME)
+$(NAME): $(OBJDIR) $(LIB_NAME) $(OBJS)
 	@ $(CC) -o $(NAME) $(OBJS) -I $(INC) -L $(LIB_DIR) -l $(LIB_NAME)
 	@ echo "\033[0;32m [DONE] \033[0m"
 	

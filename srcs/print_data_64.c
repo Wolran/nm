@@ -1,5 +1,25 @@
 #include "nm.h"
 
+static void _print_64_value(unsigned long value)
+{
+	char *base = "0123456789abcdef";
+	char strnbr[16];
+	int len = 0;
+	while (value != 0)
+	{
+		strnbr[len] = base[value % 16];
+		value /= 16;
+		len++;
+	}
+	while (len < 16)
+	{
+		strnbr[len] = '0';
+		len++;
+	}
+	while (len--)
+		write(1, &strnbr[len], 1);
+}
+
 static void	_print_data(t_data *data) 
 {
 	t_list *sym = data->sym;
@@ -7,9 +27,12 @@ static void	_print_data(t_data *data)
 	{
 		t_sym *symbol = sym->data;
 		if (symbol->sym_64->st_shndx == 0)
-			ft_printf("%16c %c %s\n", ' ', symbol->symbol, symbol->name);
+			ft_printf("                 %c %s\n", symbol->symbol, symbol->name);
 		else
-			ft_printf("%016lx %c %s\n", symbol->sym_64->st_value, symbol->symbol, symbol->name);
+		{
+			_print_64_value(symbol->sym_64->st_value);
+			ft_printf(" %c %s\n", symbol->symbol, symbol->name);
+		}
 		sym = sym->next;
 	}
 }
@@ -30,21 +53,21 @@ int	print_data_64(t_data *data)
 	Elf64_Ehdr *header = data->data;
 	data->header_64 = header;
 	if (header->e_shoff > (size_t)data->stat.st_size)
-		return printf("'%s': error e_shoff bigger than file size\n", data->file_name), 1;
+		return ft_printf("'%s': error e_shoff bigger than file size\n", data->file_name), 1;
 
 	Elf64_Shdr *sections = data->data + header->e_shoff;
 	data->section_64 = sections;
 	if (sections->sh_size != 0 && sections->sh_offset != 0)
-		return printf("'%s': error bad section\n", data->file_name), 1;
+		return ft_printf("'%s': error bad section\n", data->file_name), 1;
 
 	if (header->e_shstrndx >= header->e_shnum || sections[header->e_shstrndx].sh_type != SHT_STRTAB)
-		return printf("'%s': error bad section header\n", data->file_name), 1;
+		return ft_printf("'%s': error bad section header\n", data->file_name), 1;
 
 	Elf64_Shdr *section_str = NULL;
 	Elf64_Shdr *section_sym = NULL;
 	for (int i = 0; i < header->e_shnum; ++i) {
 		if (sections[i].sh_name > sections[header->e_shstrndx].sh_size)
-			return printf("'%s': error bad section header at %d\n", data->file_name, i), 1;
+			return ft_printf("'%s': error bad section header at %d\n", data->file_name, i), 1;
 		if (sections[i].sh_type == SHT_SYMTAB) {
 			section_sym = &sections[i];
 			section_str = &sections[sections[i].sh_link];
@@ -52,7 +75,7 @@ int	print_data_64(t_data *data)
 	  }
 	}
 	if (section_sym == NULL || section_str == NULL)
-		return printf("'%s': no symbol table found\n", data->file_name), 1;
+		return ft_printf("'%s': no symbol table found\n", data->file_name), 1;
 
 	Elf64_Sym *symbol_table = data->data + section_sym->sh_offset;
 	for (int i = 1; i < ft_ceil((double)section_sym->sh_size / (double)sizeof(Elf64_Sym)); ++i)
@@ -63,7 +86,7 @@ int	print_data_64(t_data *data)
 			continue;
 		t_sym *symbol = malloc(sizeof(t_sym));
 		if (!symbol)
-			return printf("memory allocation failed\n"), 1;
+			return ft_printf("memory allocation failed\n"), 1;
 		ft_bzero(symbol, sizeof(t_sym));
 		symbol->sym_64 = sym;
 		symbol->name = data->data + section_str->sh_offset + sym->st_name;
@@ -74,13 +97,14 @@ int	print_data_64(t_data *data)
 		symbol->symbol = char_Symbol_64(data, symbol);
 		t_list *new = ft_lstnew(symbol);
 		if (!new)
-			return printf("memory allocation failed\n"), 1;
+			return ft_printf("memory allocation failed\n"), 1;
 		ft_lstadd_back(&data->sym, new);
 	}
 
-	//nm sort alphanumerically but remove '_'
 	ft_lstsort(&data->sym, &comp_Val);
 	ft_lstsort(&data->sym, &comp_Sym);
+	if (data->printing)
+		ft_printf("\n%s:\n", data->file_name);
 	_print_data(data);
 	return 0;
 }

@@ -20,6 +20,8 @@ static int	ft_verif(const char *str, int i, va_list args)
 		return (ft_hex(va_arg(args, unsigned int), "0123456789ABCDEF"));
 	else if (str[i] == '%')
 		return (ft_pourcentage());
+	else if (str[i] > '0' && str[i] < '9')
+		return (ft_putchar_mod(va_arg(args, int)));
 	return (0);
 }
 

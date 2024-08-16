@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
-#include "ft_printf.h"
+#include "includes/ft_printf.h"
 
 // DEFINES
 
@@ -21,23 +21,24 @@ typedef struct	s_sym	t_sym;
 
 // PROTOTYPES
 
-int			print_data_64(t_data *data);
-int			print_data_32(t_data *data);
-char		char_Symbol_64(t_data *data, t_sym *symbol);
-char		char_Symbol_32(t_data *data, t_sym *symbol);
-int			comp_Val(void *a, void *b);
-int			comp_Sym(void *a, void *b);
-unsigned	char char_Special_Symbol(const char *name, char ch, unsigned int local);
+int				print_data_64(t_data *data);
+int				print_data_32(t_data *data);
+char			char_Symbol_64(t_data *data, t_sym *symbol);
+char			char_Symbol_32(t_data *data, t_sym *symbol);
+int				comp_Val(void *a, void *b);
+int				comp_Sym(void *a, void *b);
+unsigned char	char_Special_Symbol(const char *name, char ch, unsigned int local);
 
-void		ft_lstclear(t_list **lst, void (*del)(void *));
-void		ft_lstadd_back(t_list **lst, t_list *new);
-void		ft_lstsort(t_list **lst, int (*cmp)(void *, void *));
-t_list		*ft_lstnew(void *content);
-t_list		*ft_lstat(t_list *begin_list, unsigned int nbr);
-int			ft_lstsize(t_list *lst);
-void		ft_bzero(void *s, size_t n);
-int			ft_ceil(double n);
-void		free_data(t_data *data);
+void			ft_lstclear(t_list **lst, void (*del)(void *));
+void			ft_lstadd_back(t_list **lst, t_list *new);
+void			ft_lstsort(t_list **lst, int (*cmp)(void *, void *));
+t_list			*ft_lstnew(void *content);
+t_list			*ft_lstat(t_list *begin_list, unsigned int nbr);
+int				ft_lstsize(t_list *lst);
+void			ft_bzero(void *s, size_t n);
+int				ft_ceil(double n);
+int				ft_strncmp(const char *s1, const char *s2, size_t n);
+void			free_data(t_data *data);
 
 
 // STRUCTS
@@ -51,6 +52,7 @@ struct s_data
 	Elf64_Shdr		*section_64;
 	Elf32_Ehdr		*header_32;
 	Elf32_Shdr		*section_32;
+	int				printing;
 	int				fd;
 	int				elf;
 	struct stat 	stat;
