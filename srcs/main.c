@@ -40,7 +40,7 @@ static int	_init_data(t_data *data, int arc)
 
 	Elf64_Ehdr* header = (Elf64_Ehdr*)data->data;
 	char str[4] = {header->e_ident[0], header->e_ident[1], header->e_ident[2], header->e_ident[3]};
-	if (strncmp(str, ELFMAG, SELFMAG) != 0)
+	if (ft_strncmp(str, ELFMAG, SELFMAG) != 0)
 		return ft_printf("'%s': invalid ELF file\n", data->file_name), 1;
 
 	if (header->e_ident[EI_CLASS] == ELFCLASS32) 
@@ -88,7 +88,3 @@ int main(int arc, char **arv)
 	ft_lstclear(&lists , NULL);
 	return 0;
 }
-
-
-//!TODO: change ft_printf, strncmp, strlen
-//!TODO: S_ISDIR ? bonus ?

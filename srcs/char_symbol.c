@@ -4,30 +4,30 @@ unsigned char char_Special_Symbol(const char *name, char ch, unsigned int local)
 {
 	char c = 0;
 
-	if (!strncmp(name, ".symtab", strlen(".symtab")) || 
-		!strncmp(name, ".shstrtab", strlen(".shstrtab")) ||
-		!strncmp(name, ".strtab", strlen(".strtab")))
+	if (!ft_strncmp(name, ".symtab", ft_strlen(".symtab")) || 
+		!ft_strncmp(name, ".shstrtab", ft_strlen(".shstrtab")) ||
+		!ft_strncmp(name, ".strtab", ft_strlen(".strtab")))
 		return 'a';
 
-	else if (!strncmp(name, ".comment", strlen(".comment")) || 
-		!strncmp(name, ".ident", strlen(".ident")) ||
-		!strncmp(name, ".gnu_debug", strlen(".gnu_debug")) ||
-		!strncmp(name, ".copyright", strlen(".copyright")) ||
-		!strncmp(name, ".SUNW", strlen(".SUNW")))
+	else if (!ft_strncmp(name, ".comment", ft_strlen(".comment")) || 
+		!ft_strncmp(name, ".ident", ft_strlen(".ident")) ||
+		!ft_strncmp(name, ".gnu_debug", ft_strlen(".gnu_debug")) ||
+		!ft_strncmp(name, ".copyright", ft_strlen(".copyright")) ||
+		!ft_strncmp(name, ".SUNW", ft_strlen(".SUNW")))
 		return 'n';
 
-	else if (!strncmp(name, ".debug_", strlen(".debug_")))
+	else if (!ft_strncmp(name, ".debug_", ft_strlen(".debug_")))
 		return 'N';
 
-	else if (!strncmp(name, ".gnu.hash", strlen(".gnu.hash")) ||
-		!strncmp(name, ".SUNW_version", strlen(".SUNW_version")) ||
-		!strncmp(name, ".rela.plt", strlen(".rela.plt")) ||
-		!strncmp(name, ".rel.plt", strlen(".rel.plt")) ||
-		!strncmp(name, ".dynstr", strlen(".dynstr")) ||
-		!strncmp(name, ".gnu.version_r", strlen(".gnu.version_r")) ||
-		!strncmp(name, ".rela.got", strlen(".rela.got")) ||
-		!strncmp(name, ".rodata", strlen(".rodata")) ||
-		!strncmp(name, ".rela.bss", strlen(".rela.bss")))
+	else if (!ft_strncmp(name, ".gnu.hash", ft_strlen(".gnu.hash")) ||
+		!ft_strncmp(name, ".SUNW_version", ft_strlen(".SUNW_version")) ||
+		!ft_strncmp(name, ".rela.plt", ft_strlen(".rela.plt")) ||
+		!ft_strncmp(name, ".rel.plt", ft_strlen(".rel.plt")) ||
+		!ft_strncmp(name, ".dynstr", ft_strlen(".dynstr")) ||
+		!ft_strncmp(name, ".gnu.version_r", ft_strlen(".gnu.version_r")) ||
+		!ft_strncmp(name, ".rela.got", ft_strlen(".rela.got")) ||
+		!ft_strncmp(name, ".rodata", ft_strlen(".rodata")) ||
+		!ft_strncmp(name, ".rela.bss", ft_strlen(".rela.bss")))
 	{
 		c = 'R';
 		if (local == STB_LOCAL)

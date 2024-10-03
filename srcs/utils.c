@@ -33,3 +33,11 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 			return ((unsigned char)*--s1 - (unsigned char)*--s2);
 	return (0);
 }
+
+int ft_strlen(const char *s)
+{
+	int i = 0;
+	while (s[i])
+		i++;
+	return i;
+}

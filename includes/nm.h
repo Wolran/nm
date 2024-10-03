@@ -38,6 +38,7 @@ int				ft_lstsize(t_list *lst);
 void			ft_bzero(void *s, size_t n);
 int				ft_ceil(double n);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
+int				ft_strlen(const char *s);
 void			free_data(t_data *data);
 
 
